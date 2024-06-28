@@ -1,0 +1,42 @@
+version: '3.8'
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+
+services:
+  foods:
+    container_name: foods
+    build: .
+    entrypoint: ./start.sh
+    volumes:
+      - .:/home/node/app
+    ports:
+      - '5544:3000'
+    depends_on:
+      - foodsDB
+
+  foodsDB:
+    container_name: foodsDB
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=app
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: email@email.com
+      PGADMIN_DEFAULT_PASSWORD: 123456
+    ports:
+      - '5050:80'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - foodsDB
