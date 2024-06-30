@@ -1,0 +1,27 @@
+POST http://localhost:5544/users/login
+Content-Type: application/json
+
+{
+    "email":"dgo.eduardolima@gmail.com",
+    "pass": "123456"
+}
+
+###
+
+POST http://localhost:5544/users
+Content-Type: application/json
+
+{
+    "name":"Diego Lima",
+    "email":"dgo.eduardolima@gmail.com",
+    "password": "123456",
+    "cpf":"12345678910"
+}
+
+###
+GET http://localhost:5544/users
+Content-Type: application/json
+
+###
+GET http://localhost:5544/users/a022ac83-bc94-4164-8a2e-94a252ef3cff
+Content-Type: application/json

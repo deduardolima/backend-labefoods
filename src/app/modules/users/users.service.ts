@@ -1,31 +1,38 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/app/core/prisma/prisma.service';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto) {
+    const existUser = await this.findByEmail(createUserDto.email)
+    if (existUser) {
+      throw new BadRequestException('O endereço de e-mail já está em uso.');
+    }
     try {
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-      return this.prisma.user.create({
+      const { password, ...userData } = createUserDto;
+
+      return await this.prisma.user.create({
         data: {
-          ...createUserDto,
+          ...userData,
           hashPassword: hashedPassword,
         },
       });
-
-    } catch (error) {
-      // if (error instanceof PrismaClient.PrismaClientKnownRequestError) {
-      //   throw new BadRequestException(error.message);
-      // }
-      throw new InternalServerErrorException(error.message);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (e.code) {
+          case 'P2002':
+            throw new BadRequestException('O CPF já está em uso.');
+        }
+      }
+      throw new InternalServerErrorException(e.message);
     }
-
   }
 
   async findByEmail(email: string) {
@@ -35,9 +42,9 @@ export class UsersService {
       });
 
     } catch (error) {
-      // if (error instanceof PrismaClient.PrismaClientKnownRequestError) {
-      //   throw new BadRequestException(error.message);
-      // }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new BadRequestException(error.message);
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -62,9 +69,9 @@ export class UsersService {
       });
 
     } catch (error) {
-      // if (error instanceof PrismaClient.PrismaClientKnownRequestError) {
-      //   throw new BadRequestException(error.message);
-      // }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new BadRequestException(error.message);
+      }
       throw new InternalServerErrorException(error.message);
     }
   }
