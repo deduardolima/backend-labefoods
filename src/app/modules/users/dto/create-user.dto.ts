@@ -24,3 +24,21 @@ export class CreateUserDto {
   cpf: string;
 }
 
+
+export class UserResponseDto {
+  @ApiProperty({ example: 'd25sa1d51sad51sa5d1sa5d1sa' })
+  @IsString()
+  id: string;
+
+  @ApiProperty({ example: 'João da Silva' })
+  @IsString()
+  name: string;
+
+  @ApiProperty({ example: 'joao.silva@example.com' })
+  @IsString()
+  email: string;
+
+  @ApiProperty({ example: '12345678900' })
+  @IsString()
+  cpf: string;
+}
