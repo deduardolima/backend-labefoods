@@ -1,7 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber, IsDate } from 'class-validator';
-import { UserResponseDto } from '../../users/dto/create-user.dto';
 import { RestaurantResponseDto } from '../../restaurants/dto/create-restaurant.dto';
+import { IsString, IsNotEmpty, IsNumber, IsDate } from 'class-validator';
+import { UserResponseDto } from '../../auth/users/dto/create-user.dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderDto {
   @ApiProperty()
@@ -51,12 +51,6 @@ export class OrderResponseDto {
   @IsString()
   userId: string;
 
-  @ApiProperty({ type: RestaurantResponseDto })
-  restaurant: RestaurantResponseDto;
-
-  @ApiProperty({ type: UserResponseDto })
-  user: UserResponseDto;
-
   @ApiProperty({ example: '2023-06-30T15:00:00Z' })
   @IsDate()
   createdAt: Date;
@@ -64,4 +58,13 @@ export class OrderResponseDto {
   @ApiProperty({ example: '2023-06-30T15:00:00Z' })
   @IsDate()
   updatedAt: Date;
+}
+
+export class OrderRelatedResponseDto extends OrderResponseDto {
+  @ApiProperty({ type: UserResponseDto })
+  user: UserResponseDto;
+
+  @ApiProperty({ type: RestaurantResponseDto })
+  restaurant: RestaurantResponseDto;
+
 }

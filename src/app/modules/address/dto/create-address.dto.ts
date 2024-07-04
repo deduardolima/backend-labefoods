@@ -75,7 +75,7 @@ export class AddressResponseDto {
 
   @ApiProperty({ example: 'apto 305' })
   @IsString()
-  complement: string;
+  complement?: string;
 
   @ApiProperty({ example: '1sa25d1sa2-da36-4e08-866e-94701efe7192', })
   @IsString()

@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateOrderDto, OrderResponseDto } from './dto/create-order.dto';
+import { CreateOrderDto, OrderRelatedResponseDto, OrderResponseDto } from './dto/create-order.dto';
+import { ProductResponseDto } from '../products/dto/create-product.dto';
 import { PrismaService } from 'src/app/core/prisma/prisma.service';
 import { Order, Prisma, Restaurant, User } from '@prisma/client';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { ProductResponseDto } from '../products/dto/create-product.dto';
 
 @Injectable()
 export class OrderService {
@@ -132,7 +132,7 @@ export class OrderService {
     }
   };
 
-  private toOrderResponseDto(order: Order & { user: User; restaurant: Restaurant & { products: ProductResponseDto[] } }): OrderResponseDto {
+  private toOrderResponseDto(order: Order & { user: User; restaurant: Restaurant & { products: ProductResponseDto[] } }): OrderRelatedResponseDto {
     return {
       id: order.id,
       restaurantName: order.restaurantName,
@@ -166,6 +166,8 @@ export class OrderService {
         name: order.user.name,
         email: order.user.email,
         cpf: order.user.cpf,
+        hashPassword: order.user.hashPassword
+
       },
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
